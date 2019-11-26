@@ -1,5 +1,6 @@
 package com.hibicode.beerstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,4 +27,16 @@ public class Beer {
     @NotNull(message = "beers-3")
     @DecimalMin(value = "0", message = "beers-4")
     private BigDecimal volume;
+
+    @Transient
+    @JsonIgnore
+    public boolean isNew() {
+        return this.id == null;
+    }
+
+    @Transient
+    @JsonIgnore
+    public boolean alreadyExist() {
+        return this.id != null;
+    }
 }

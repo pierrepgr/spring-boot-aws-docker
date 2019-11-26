@@ -18,11 +18,27 @@ public class BeerService {
     }
 
     public Beer save(final Beer beer) {
-        Optional<Beer> beerByNameAndType = this.beers.findByNameAndType(beer.getName(), beer.getType());
+        verifyIfBeerExists(beer);
+        return beers.save(beer);
+    }
 
-        if (beerByNameAndType.isPresent())
+    public void delete(Long id) {
+        this.beers.deleteById(id);
+    }
+
+    private void verifyIfBeerExists(final Beer beer) {
+        Optional<Beer> beerByNameAndType = beers.findByNameAndType
+                (beer.getName(), beer.getType());
+
+        if (beerByNameAndType.isPresent() && (beer.isNew() ||
+                isUpdatingToADifferentBeer(beer, beerByNameAndType))) {
             throw new BeerAlreadyExistException();
+        }
+    }
 
-        return this.beers.save(beer);
+    private boolean isUpdatingToADifferentBeer(Beer beer,
+                                               Optional<Beer> beerByNameAndType) {
+        return beer.alreadyExist() && !beerByNameAndType.get()
+                .equals(beer);
     }
 }

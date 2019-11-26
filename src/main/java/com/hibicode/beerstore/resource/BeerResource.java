@@ -30,4 +30,16 @@ public class BeerResource {
     public Beer create(@RequestBody @Valid Beer beer) {
         return this.beerService.save(beer);
     }
+
+    @PutMapping("/{id}")
+    public Beer update(@RequestBody @Valid Beer beer, @PathVariable("id") Long id) {
+        beer.setId(id);
+        return this.beerService.save(beer);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("id") Long id) {
+        this.beerService.delete(id);
+    }
 }

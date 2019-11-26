@@ -11,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -64,6 +65,14 @@ public class ApiExceptionHandler {
         final ErrorResponse errorResponse = ErrorResponse.of(status, toApiError(errorCode, locale));
 
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyResultDataAccessException(EmptyResultDataAccessException exception, Locale locale) {
+        final String errorCode = "beers-6";
+        final HttpStatus status = HttpStatus.NOT_FOUND;
+        final ErrorResponse errorResponse = ErrorResponse.of(status, toApiError(errorCode, locale));
+        return ResponseEntity.status(status).body(errorResponse);
     }
 
     public ApiError toApiError(String code, Locale locale, Object... args) {
